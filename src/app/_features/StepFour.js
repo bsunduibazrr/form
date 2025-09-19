@@ -5,8 +5,6 @@ import { useState } from "react";
 import { FormInput } from "../_component/form-input";
 
 export const StepFour = (props) => {
-  const { handleBackStep } = props;
-
   return (
     <div
       style={{

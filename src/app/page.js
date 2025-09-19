@@ -4,12 +4,14 @@ import { StepOne } from "./_features/StepOne";
 import { StepTwo } from "./_features/StepTwo";
 import { StepThree } from "./_features/StepThree";
 import { StepFour } from "./_features/StepFour";
-import "./style.css"; // Ensure animation styles are imported
+import "./style.css";
 
 export default function Home() {
   const [step, setStep] = useState(1);
   const [transitioning, setTransitioning] = useState(false);
   const [direction, setDirection] = useState("forward");
+  const [removeButton, setRemoveButton] = useState(null);
+  const [image, setImage] = useState(null);
 
   const handleNextStep = () => {
     setDirection("forward");
@@ -17,7 +19,7 @@ export default function Home() {
     setTimeout(() => {
       setStep((prev) => prev + 1);
       setTransitioning(false);
-    }, 300); // Animation duration
+    }, 300);
   };
 
   const handleBackStep = () => {

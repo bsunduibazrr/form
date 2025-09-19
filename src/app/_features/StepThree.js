@@ -1,10 +1,8 @@
 "use client";
-import Image from "next/image";
 import { useState } from "react";
 
 export const StepThree = (props) => {
   const { handleNextStep, handleBackStep } = props;
-
   const [dob, setDob] = useState("");
   const [image, setImage] = useState(null);
   const [errors, setErrors] = useState({
@@ -14,7 +12,13 @@ export const StepThree = (props) => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setImage(file);
+    if (file) {
+      setImage(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemove = () => {
+    setImage(null);
   };
 
   const handleContinue = () => {
@@ -22,12 +26,25 @@ export const StepThree = (props) => {
     let isValid = true;
 
     if (!dob) {
-      newErrors.dob = "Date of birth is required.";
+      newErrors.dob = "Please select a date.";
       isValid = false;
+    } else {
+      const today = new Date();
+      const birthDate = new Date(dob);
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+
+      if (age < 18) {
+        newErrors.dob = "You must reached 18 to submit .";
+        isValid = false;
+      }
     }
 
     if (!image) {
-      newErrors.image = "Profile image is required.";
+      newErrors.image = "Image cannot be blank.";
       isValid = false;
     }
 
@@ -36,6 +53,14 @@ export const StepThree = (props) => {
     if (isValid) {
       handleNextStep();
     }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -54,13 +79,15 @@ export const StepThree = (props) => {
             Please provide all current information accurately.
           </p>
         </div>
-        <div className="flex">
+
+        <div className="flex" style={{ flexDirection: "column", gap: "0px" }}>
           <div
             style={{
-              paddingTop: "24px",
               display: "flex",
               flexDirection: "column",
               gap: "6px",
+              maxWidth: "416px",
+              paddingTop: "15px",
             }}
           >
             <p className="text3">Date of Birth *</p>
@@ -69,7 +96,7 @@ export const StepThree = (props) => {
               value={dob}
               onChange={(e) => setDob(e.target.value)}
               style={{
-                width: "416px",
+                width: "100%",
                 height: "44px",
                 border: errors.dob ? "1px solid red" : "1px solid #CBD5E1",
                 color: "black",
@@ -84,15 +111,47 @@ export const StepThree = (props) => {
 
           <div
             className="stepthree"
-            style={{ display: "flex", flexDirection: "column", gap: "6px" }}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              gap: "6px",
+              maxWidth: "416px",
+              position: "relative",
+              marginTop: "24px",
+            }}
           >
             <p className="text3">Profile Image *</p>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="image"
-            />
+
+            {!image && (
+              <input
+                type="file"
+                id="imagePreview"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="image"
+                style={{ cursor: "pointer" }}
+              />
+            )}
+
+            {image && (
+              <div style={{ position: "relative", width: "100%" }}>
+                <img
+                  src={image}
+                  alt="Preview"
+                  className="preview"
+                  style={{
+                    width: "100%",
+                    height: "200px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                  }}
+                />
+                <button className="removebtn" onClick={handleRemove}>
+                  ✕
+                </button>
+              </div>
+            )}
+
             {errors.image && (
               <p style={{ color: "red", paddingTop: "10px" }}>{errors.image}</p>
             )}
@@ -101,9 +160,10 @@ export const StepThree = (props) => {
           <div
             style={{
               paddingBottom: "32px",
-              paddingTop: "142px",
+              paddingTop: "102px",
               display: "flex",
               gap: "8px",
+              maxWidth: "416px",
             }}
           >
             <button className="backbtn" onClick={handleBackStep}>
@@ -114,7 +174,7 @@ export const StepThree = (props) => {
               className="button"
               onClick={handleContinue}
             >
-              Continue 3/3 ►
+              Submit 3/3 ►
             </button>
           </div>
         </div>

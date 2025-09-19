@@ -3,18 +3,33 @@ import Image from "next/image";
 
 import { useState } from "react";
 import { FormInput } from "../_component/form-input";
+const addStepTwoValuesToLocalStorage = (values) => {
+  localStorage.setItem("stepTwo", JSON.stringify(values));
+};
 
 export const StepTwo = (props) => {
   const { handleNextStep, handleBackStep } = props;
 
   const [filter, setFilter] = useState("");
+  const getStepTwoValuesFromLocalStorage = () => {
+    const values = localStorage.getItem("stepTwo");
+    if (values) {
+      return JSON.parse(values);
+    } else {
+      return {
+        firstName: "",
+        lastName: "",
+        userName: "",
+      };
+    }
+  };
 
-  const [formValues, setFormValues] = useState({
-    firstName: "",
-    lastName: "",
-    userName: "",
-    password: "",
-  });
+  const [formValues, setFormValues] = useState(
+    getStepTwoValuesFromLocalStorage
+  );
+
+  const stringObject = JSON.stringify(formValues);
+  console.log(stringObject);
 
   const [errors, setErrors] = useState({
     firstNameError: "",
@@ -73,6 +88,7 @@ export const StepTwo = (props) => {
     setErrors(newErrors);
 
     if (isValid) {
+      addStepTwoValuesToLocalStorage(formValues);
       handleNextStep();
     }
   };
