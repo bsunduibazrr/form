@@ -1,42 +1,33 @@
 "use client";
-import Image from "next/image";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormInput } from "../_component/form-input";
-
-const addStepOneValuesToLocalStorage = (values) => {
-  localStorage.setItem("stepOne", JSON.stringify(values));
-};
 
 export const StepOne = (props) => {
   const { handleNextStep } = props;
-  const [filter, setFilter] = useState("");
 
-  const getStepOneValuesFromLocalStorage = () => {
-    const values = localStorage.getItem("stepOne");
-    if (values) {
-      return JSON.parse(values);
-    } else {
-      return {
-        firstName: "",
-        lastName: "",
-        userName: "",
-      };
-    }
-  };
-
-  const [formValues, setFormValues] = useState(
-    getStepOneValuesFromLocalStorage
-  );
-
-  const stringObject = JSON.stringify(formValues);
-  console.log(stringObject);
+  // Form-ийн default утгууд
+  const [formValues, setFormValues] = useState({
+    firstName: "",
+    lastName: "",
+    userName: "",
+  });
 
   const [errors, setErrors] = useState({
     firstNameError: "",
     lastNameError: "",
     userNameError: "",
   });
+
+  // localStorage-с өгөгдлийг унших
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedValues = localStorage.getItem("stepOne");
+      if (savedValues) {
+        setFormValues(JSON.parse(savedValues));
+      }
+    }
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,10 +37,7 @@ export const StepOne = (props) => {
     }));
   };
 
-  const validateName = (name) => {
-    const regex = /^[a-zA-Z]{2,}$/;
-    return regex.test(name);
-  };
+  const validateName = (name) => /^[a-zA-Z]{2,}$/.test(name);
 
   const handleContinue = () => {
     let newErrors = {
@@ -57,7 +45,6 @@ export const StepOne = (props) => {
       lastNameError: "",
       userNameError: "",
     };
-
     let isValid = true;
 
     if (!validateName(formValues.firstName)) {
@@ -80,19 +67,15 @@ export const StepOne = (props) => {
 
     setErrors(newErrors);
 
-    if (isValid) {
-      addStepOneValuesToLocalStorage(formValues);
+    if (isValid && typeof window !== "undefined") {
+      localStorage.setItem("stepOne", JSON.stringify(formValues));
       handleNextStep();
     }
   };
 
   return (
     <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        paddingTop: "250px",
-      }}
+      style={{ display: "flex", justifyContent: "center", paddingTop: "250px" }}
     >
       <div className="header">
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
@@ -133,7 +116,6 @@ export const StepOne = (props) => {
               "This username is already taken. Please choose another one."
             }
           />
-
           <div style={{ paddingBottom: "32px", paddingTop: "142px" }}>
             <button className="button" onClick={handleContinue}>
               Continue 1/3 ►
