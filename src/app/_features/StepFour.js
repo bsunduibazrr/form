@@ -1,9 +1,6 @@
 "use client";
 import Image from "next/image";
 
-import { useState } from "react";
-import { FormInput } from "../_component/form-input";
-
 export const StepFour = (props) => {
   return (
     <div

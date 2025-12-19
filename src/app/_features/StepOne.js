@@ -1,12 +1,11 @@
 "use client";
-
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { FormInput } from "../_component/form-input";
 
 export const StepOne = (props) => {
   const { handleNextStep } = props;
 
-  // Form-ийн default утгууд
   const [formValues, setFormValues] = useState({
     firstName: "",
     lastName: "",
@@ -19,7 +18,6 @@ export const StepOne = (props) => {
     userNameError: "",
   });
 
-  // localStorage-с өгөгдлийг унших
   useEffect(() => {
     if (typeof window !== "undefined") {
       const savedValues = localStorage.getItem("stepOne");
@@ -79,7 +77,7 @@ export const StepOne = (props) => {
     >
       <div className="header">
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <img className="logo" src="/logo.png" alt="logo" />
+          <Image src="/logo.png" alt="logo" className="logo" />
           <p className="text">Join us!😎</p>
           <p className="text2">
             Please provide all current information accurately.
