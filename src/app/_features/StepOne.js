@@ -77,7 +77,7 @@ export const StepOne = (props) => {
     >
       <div className="header">
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <Image src="/logo.png" alt="logo" className="logo" />
+          <img src="/logo.png" alt="logo" className="logo" />
           <p className="text">Join us!😎</p>
           <p className="text2">
             Please provide all current information accurately.
